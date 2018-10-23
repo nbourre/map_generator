@@ -122,14 +122,7 @@ class Terrain {
                 int index = i + (j * w);
                 Voxel v = voxels.get(index);
 
-                pushMatrix();
-
-                translate(i, j, v.getLocation().z);
-
-                fill(v.getFillColor());
-                box(1, 1, 1);
-
-                popMatrix();
+                v.display();
             }
         }
     }

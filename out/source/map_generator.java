@@ -299,14 +299,7 @@ class Terrain {
                 int index = i + (j * w);
                 Voxel v = voxels.get(index);
 
-                pushMatrix();
-
-                translate(i, j, v.getLocation().z);
-
-                fill(v.getFillColor());
-                box(1, 1, 1);
-
-                popMatrix();
+                v.display();
             }
         }
     }
@@ -324,9 +317,10 @@ public class Voxel extends GraphicObject {
 
     public void display() {
         pushMatrix();
+        
         translate(location.x, location.y, location.z);
         fill(fillColor);
-        box(1, 1, 1);
+        box(2, 2, 2);
         popMatrix();
     }
 

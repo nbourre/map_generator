@@ -10,9 +10,10 @@ public class Voxel extends GraphicObject {
 
     void display() {
         pushMatrix();
+        
         translate(location.x, location.y, location.z);
         fill(fillColor);
-        box(1, 1, 1);
+        box(2, 2, 2);
         popMatrix();
     }
 
