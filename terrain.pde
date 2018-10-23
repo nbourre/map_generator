@@ -17,6 +17,7 @@ class Terrain {
     float zoomLevel = 1f;
     int maxZoom = 4;
     float zoomIncrement = .1f;
+    ArrayList<Voxel> voxels = new ArrayList<Voxel>();
 
     Terrain(int sizeX, int sizeY) {
         w = sizeX;
@@ -24,6 +25,17 @@ class Terrain {
 
         dem = new DEM(w * maxZoom, h * maxZoom);
         pg = createGraphics(w, h, P2D);
+
+        initVoxels();
+    }
+
+    void initVoxels(){
+        for (int j = 0; j < h; j++) {
+            for (int i = 0; i < w; i++) {
+                Voxel v = new Voxel();
+                voxels.add(v);
+            }
+        }
     }
 
     void setOffsets(int x, int y) {
@@ -89,6 +101,12 @@ class Terrain {
                     
                     int index = i + (j * w);
                     pg.pixels[index] = c;
+
+                    Voxel v = voxels.get(index);
+                    v.setFillColor(c);
+                    v.setLocation(i, j, map(value, 0, 1, 0, 255));
+
+
                 }
             }
             pg.updatePixels();
@@ -98,7 +116,22 @@ class Terrain {
     }
 
     void display() {
-        image (pg, 0, 0, w, h);
+        for (int j = 0; j < h; j++) {
+            for (int i = 0; i < w; i++) {
+                
+                int index = i + (j * w);
+                Voxel v = voxels.get(index);
+
+                pushMatrix();
+
+                translate(i, j, v.getLocation().z);
+
+                fill(v.getFillColor());
+                box(1, 1, 1);
+
+                popMatrix();
+            }
+        }
     }
     
 }

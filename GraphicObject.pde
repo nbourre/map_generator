@@ -10,5 +10,22 @@ abstract class GraphicObject {
   abstract void update(float deltaTime);
   
   abstract void display();
+
+  color getFillColor(){
+    return fillColor;
+  }
+
+  void setFillColor(color c) {
+      fillColor = c;
+  }
+
+  PVector getLocation() {
+    return location;
+  }
   
+  void setLocation(float x, float y, float z) {
+      location.x = x;
+      location.y = y;
+      location.z = z;
+  }
 }

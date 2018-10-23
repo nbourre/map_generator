@@ -115,32 +115,21 @@ class DEM {
   
   float offsetX = 0f;
   float offsetY = 0f;
-  int x, y;
   
   float [][] values;
-  int [][] valuesToDisplay;
-
-  PGraphics pg;
-  boolean cached = false;
    
   DEM (int sizeX, int sizeY) {
     w = sizeX;
     h = sizeY;
     values = new float[w][h];
-    valuesToDisplay = new int[w][h];
-
-    pg = createGraphics(w, h, P2D);
 
     init();
   }
   
   public void init() {
-
-    
     for (int j = 0; j < h; j++) {
       for (int i = 0; i < w; i++) {
         values[i][j] = noise(offsetX, offsetY);
-        valuesToDisplay[i][j] = (int)map(values[i][j], 0, 1, 0, 255);
         offsetX+=.01f;
         
       }
@@ -150,22 +139,6 @@ class DEM {
     
   }
   
-  public void display() {
-    
-    if (!cached) {
-      pg.beginDraw();
-      for (int j = 0; j < h; j++) {
-        for (int i = 0; i < w; i++) {
-          pg.stroke(valuesToDisplay[i][j]);
-          pg.point (i, j); 
-        }
-      }
-      pg.endDraw();
-      cached = true;
-    } else {
-      image(pg, 0, 0, w, h);
-    }   
-  }
 
   public float getAt(int i, int j) {
     return values[i][j];
@@ -183,7 +156,24 @@ abstract class GraphicObject {
   public abstract void update(float deltaTime);
   
   public abstract void display();
+
+  public int getFillColor(){
+    return fillColor;
+  }
+
+  public void setFillColor(int c) {
+      fillColor = c;
+  }
+
+  public PVector getLocation() {
+    return location;
+  }
   
+  public void setLocation(float x, float y, float z) {
+      location.x = x;
+      location.y = y;
+      location.z = z;
+  }
 }
 class Terrain {
 
@@ -204,6 +194,7 @@ class Terrain {
     float zoomLevel = 1f;
     int maxZoom = 4;
     float zoomIncrement = .1f;
+    ArrayList<Voxel> voxels = new ArrayList<Voxel>();
 
     Terrain(int sizeX, int sizeY) {
         w = sizeX;
@@ -211,6 +202,17 @@ class Terrain {
 
         dem = new DEM(w * maxZoom, h * maxZoom);
         pg = createGraphics(w, h, P2D);
+
+        initVoxels();
+    }
+
+    public void initVoxels(){
+        for (int j = 0; j < h; j++) {
+            for (int i = 0; i < w; i++) {
+                Voxel v = new Voxel();
+                voxels.add(v);
+            }
+        }
     }
 
     public void setOffsets(int x, int y) {
@@ -276,6 +278,12 @@ class Terrain {
                     
                     int index = i + (j * w);
                     pg.pixels[index] = c;
+
+                    Voxel v = voxels.get(index);
+                    v.setFillColor(c);
+                    v.setLocation(i, j, map(value, 0, 1, 0, 255));
+
+
                 }
             }
             pg.updatePixels();
@@ -285,11 +293,50 @@ class Terrain {
     }
 
     public void display() {
-        image (pg, 0, 0, w, h);
+        for (int j = 0; j < h; j++) {
+            for (int i = 0; i < w; i++) {
+                
+                int index = i + (j * w);
+                Voxel v = voxels.get(index);
+
+                pushMatrix();
+
+                translate(i, j, v.getLocation().z);
+
+                fill(v.getFillColor());
+                box(1, 1, 1);
+
+                popMatrix();
+            }
+        }
     }
     
 }
-  public void settings() {  size (800, 600, P2D); }
+public class Voxel extends GraphicObject {
+
+    public Voxel () {
+        location = new PVector();
+    }
+
+    public void update(float deltaTime) {
+
+    }
+
+    public void display() {
+        pushMatrix();
+        translate(location.x, location.y, location.z);
+        fill(fillColor);
+        box(1, 1, 1);
+        popMatrix();
+    }
+
+
+
+
+
+    
+}
+  public void settings() {  size (800, 600, P3D); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "map_generator" };
     if (passedArgs != null) {

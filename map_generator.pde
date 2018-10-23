@@ -6,7 +6,7 @@ int deltaTime;
 Terrain terrain;
 
 void setup () {
-  size (800, 600, P2D);
+  size (800, 600, P3D);
   currentTime = millis();
   previousTime = millis();
   
