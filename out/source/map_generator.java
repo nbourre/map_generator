@@ -92,6 +92,16 @@ public void inputManager(float delta) {
         x += moveSpeed; 
       }
 
+      if (keyCode == UP) {
+        camMove = true;
+        y -= moveSpeed; 
+      }
+
+      if (keyCode == DOWN) {
+        camMove = true;
+        y += moveSpeed; 
+      }
+
       if (camMove) {
         terrain.setOffsets(x, y);
       }

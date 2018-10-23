@@ -12,7 +12,7 @@ application.windows32
 application.windows64
 application.macosx
 
-out/*.class
+**/out/*.class
 
 ### VisualStudioCode ###
 .vscode/*
